@@ -6,7 +6,7 @@ import { Formik} from "formik"
 export const Searchbar =({onSubmit}) => {
     
         const handleSubmit = (values, {resetForm}) => {
-            onSubmit(values)
+            onSubmit(values.imageName)
             resetForm()
             }
 
