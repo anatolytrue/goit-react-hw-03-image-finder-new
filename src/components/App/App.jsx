@@ -23,7 +23,7 @@ export class App extends Component {
     const nextImages = this.state.searchQuery;
     const nextPage = this.state.page;
 
-    if (prevImages !== nextImages || prevPage !== nextPage) {
+    if ((prevImages !== nextImages || prevPage !== nextPage) && this.state.status !== 'pending') {
       this.setState({
         status: 'pending',
       });
@@ -31,50 +31,62 @@ export class App extends Component {
         this.setState({ images: [] });
       }
       this.fetchPics();
-      console.log('this.state', this.state);
     }
   }
-    onSearchSubmit = (imageName) => {
-      console.log('onSearchSubmit', imageName);
-      if (imageName !== this.state.searchQuery) {
-        this.setState({
-          searchQuery: imageName,
-          page: 1,
-          images: [], 
-          status: 'pending', 
-        }, () => {
-          console.log('this.state.images', this.state.images);
-          this.fetchPics(); // Викликайте fetchPics після оновлення стану
-        });
-      }
+
+  onSearchSubmit = (imageName) => {
+  if (imageName !== this.state.searchQuery && this.state.status !== 'pending') {
+    this.setState({
+      searchQuery: imageName,
+      page: 1,
+      images: [], 
+      status: 'pending',
+    }, () => {
+      this.fetchPics(); 
+    });
   }
+}
+
+
+  // onSearchSubmit = (imageName) => {
+  //   if (imageName !== this.state.searchQuery && this.state.status !== 'pending') {
+  //     this.setState({
+  //       searchQuery: imageName,
+  //       page: 1,
+  //       images: [],
+  //       status: 'pending',
+  //     }, () => {
+  //       this.fetchPics();
+  //     },
+  // }
+  // }
   
     fetchPics = () => {
     const { searchQuery, page } = this.state;
-      console.log('searchQuery', searchQuery); 
 
-    getPics(searchQuery, page)
-      .then(response => {
-      const hits = response.hits;
-
-      this.setState(prevState => {
-        if (!hits || hits.length === 0) {
-          return {
-            status: 'rejected',
-          };
-        } else {
-          return {
-            images: [...prevState.images, ...hits],
-            status: 'resolved',
-            totalHits: response.totalHits,
-          };
-        }
-      });
-    })
-      .catch(error =>
-        this.setState({ error: error.message, status: 'rejected' })
-      );
-}
+      getPics(searchQuery, page)
+        .then(response => {
+          console.log('Response from getPics:', response);
+          const hits = response.hits;
+          
+          if (!hits || hits.length === 0) {
+            this.setState ({
+              status: 'rejected',
+            })
+          } else {
+            this.setState((prevState) => ({
+              images: page === 1 ? hits : [...prevState.images, ...hits],
+              status: 'resolved',
+              totalHits: response.totalHits,
+              // page: page + 1,
+            }))
+          }
+      })
+        .catch(error => {
+          console.log(error);
+          this.setState({ error: error.message, status: 'rejected' });
+        })
+    }
 
   render() {
 

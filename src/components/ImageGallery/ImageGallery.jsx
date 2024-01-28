@@ -1,16 +1,13 @@
-export function ImageGallery({images}) {
-    console.log('images in ImageGallery', images);
+import { ImageGalleryItem } from "components/ImageGalleryItem";
+
+export function ImageGallery({ images }) {
         return (
             <ul>
-                {images.map(({ id, tags, webformatURL }) => (
-                    // <ImageGalleryItem/>
-                    <li key={id}>
-                        <img
-                            src={webformatURL}
-                            alt={tags}
-                        />
-                    </li>
+                {images.map((image) => (
+                    <ImageGalleryItem 
+                        key={image.id}
+                        image={image} />
                 ))}
-        </ul>
+            </ul>
     )
 }
