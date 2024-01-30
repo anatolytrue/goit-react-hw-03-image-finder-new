@@ -3,6 +3,8 @@ import { MainContainer } from "./App.styled";
 import { Searchbar } from "components/Searchbar/";
 import { ImageGallery } from "components/ImageGallery";
 import { getPics } from "services/getPics";
+import { Button } from "components/Button";
+import { Loader } from "components/Loader";
 
 export class App extends Component {
 
@@ -86,19 +88,34 @@ export class App extends Component {
           console.log(error);
           this.setState({ error: error.message, status: 'rejected' });
         })
-    }
+  }
+  
+  loadMore = () => {
+      this.setState((prevState) => ({
+        page: prevState.page + 1,
+      }), () => {
+        this.fetchPics();
+      });
+  }
 
   render() {
 
+    const {images, status} = this.state
+
     return (
       <MainContainer>
-      <Searchbar onSubmit={this.onSearchSubmit} />
-      <ImageGallery images={this.state.images} />
-          {/* <ImageGalleryItem/>
-          <Loader/>
-          <Button/>
+        <Searchbar onSubmit={this.onSearchSubmit} />
+        {status !== 'idle' && images.length > 0 && (
+          <ImageGallery images={images} />
+        )} 
+        {status === 'resolved' && images.length !== 0 && (
+          <Button onClick={this.loadMore} />
+        )}
+        {status === "pending" && <Loader/>}
+          {/* 
+        
+        
           <Modal/> */}
-      Gallery
       </MainContainer>
     );
   }
