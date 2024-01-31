@@ -1,14 +1,14 @@
 import React from "react"
 import { ImageGalleryItemLi, ImageGalleryItemLiImage } from "./ImageGalleryItem.styled"
 
-export function ImageGalleryItem({image}) {
-    const { tags, webformatURL } = image
+export function ImageGalleryItem({previewImage, alt, onClickImage}) {
 
     return (
         <ImageGalleryItemLi >
             <ImageGalleryItemLiImage
-                src={webformatURL}
-                alt={tags}
+                src={previewImage}
+                alt={alt}
+                onClick={onClickImage}
             />
         </ImageGalleryItemLi>
     )

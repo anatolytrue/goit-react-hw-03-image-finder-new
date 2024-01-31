@@ -5,18 +5,21 @@ import { ImageGallery } from "components/ImageGallery";
 import { getPics } from "services/getPics";
 import { Button } from "components/Button";
 import { Loader } from "components/Loader";
+import Modal from "components/Modal/Modal";
+import { ErrorView } from "components/ErrorView/ErrorView";
 
 export class App extends Component {
 
     state = {
       images: [],
-      isShowModal: false,
+      showModal: false,
       page: 1,
       searchQuery: '',
       status: 'idle',
       totalHits: 0,
       error: null,
-      // loader: false
+      modalImage: null,
+      error: ''
     }
 
   componentDidUpdate(_, prevState) {     
@@ -48,20 +51,6 @@ export class App extends Component {
     });
   }
 }
-
-
-  // onSearchSubmit = (imageName) => {
-  //   if (imageName !== this.state.searchQuery && this.state.status !== 'pending') {
-  //     this.setState({
-  //       searchQuery: imageName,
-  //       page: 1,
-  //       images: [],
-  //       status: 'pending',
-  //     }, () => {
-  //       this.fetchPics();
-  //     },
-  // }
-  // }
   
     fetchPics = () => {
     const { searchQuery, page } = this.state;
@@ -80,7 +69,6 @@ export class App extends Component {
               images: page === 1 ? hits : [...prevState.images, ...hits],
               status: 'resolved',
               totalHits: response.totalHits,
-              // page: page + 1,
             }))
           }
       })
@@ -98,24 +86,29 @@ export class App extends Component {
       });
   }
 
+  toggleModal = largeImageURL => {
+    this.setState(({ showModal }) => ({
+      showModal: !showModal,
+      modalImage: largeImageURL,
+    }));
+  };
+
   render() {
 
-    const {images, status} = this.state
+    const { images, status, modalImage, showModal } = this.state;
 
     return (
       <MainContainer>
         <Searchbar onSubmit={this.onSearchSubmit} />
         {status !== 'idle' && images.length > 0 && (
-          <ImageGallery images={images} />
+          <ImageGallery images={images} toggleModal={this.toggleModal}/>
         )} 
         {status === 'resolved' && images.length !== 0 && (
           <Button onClick={this.loadMore} />
         )}
+        {status === "rejected" && <ErrorView/>}
         {status === "pending" && <Loader/>}
-          {/* 
-        
-        
-          <Modal/> */}
+        {showModal && (<Modal modalImage={modalImage} closeModal={this.toggleModal} />)}
       </MainContainer>
     );
   }

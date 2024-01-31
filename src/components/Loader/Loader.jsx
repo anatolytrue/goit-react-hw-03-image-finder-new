@@ -6,9 +6,7 @@ export function Loader() {
         return (<LoaderContainer >
             <Spinner>
             <ImSpinner size="32"/>
-            
             </Spinner>
             Loading...
-
         </LoaderContainer>)
 }

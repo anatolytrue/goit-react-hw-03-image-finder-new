@@ -1,7 +1,6 @@
 import {SearchBar,SearchForm,  SearchFormButton, SearchFormButtonLabel, SearchFormInput} from "./Searchbar.styled"
-import { Formik} from "formik"
-// import styled from 'styled-components';
-
+import { Formik } from "formik"
+import PropTypes from 'prop-types';
 
 export const Searchbar =({onSubmit}) => {
     
@@ -11,7 +10,6 @@ export const Searchbar =({onSubmit}) => {
             }
 
         return (
-            
             <Formik
                 initialValues={{imageName: ''}}
                 onSubmit={handleSubmit}
@@ -24,7 +22,6 @@ export const Searchbar =({onSubmit}) => {
                         </SearchFormButtonLabel>
                     </SearchFormButton>
                         <SearchFormInput
-                            // as={SearchFormInput}
                             name="imageName"
                             type="text"
                             autoComplete="off"
@@ -35,4 +32,8 @@ export const Searchbar =({onSubmit}) => {
             </SearchBar>
             </Formik>
         )
-    }
+}
+    
+Searchbar.propTypes = {
+    onSubmit: PropTypes.func.isRequired
+}
