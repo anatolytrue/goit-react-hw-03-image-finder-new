@@ -19,7 +19,6 @@ export class App extends Component {
       totalHits: 0,
       error: null,
       modalImage: null,
-      error: ''
     }
 
   componentDidUpdate(_, prevState) {     
